@@ -8,81 +8,81 @@ j: .word 0
 rows: .word 8
 
 stars:  .asciz  "*"
-spaces: .asciz  " "
+spaces: .asciz  "+"
 newline: .asciz "\n"
 
-/*
- * design of printing triangle:
- * it will be a fixed size triangle of height 8
- * since it is a fixed size, we dont need any parameters or returns
- * we dont even need a function to do this
- * remember that we need str commands for every assignment operation
- * since the for loop reassign values for i, space, rows, symbols we 
- * need at least 4 str commands
- * variable for "rows" doesnt change
- */
 
 .text
 main: 
     str lr, [sp, #-4]!          // push the lr to the stack
-    ldr r1, addressOfi 
-    ldr r2, addressOfrows
-    ldr r3, [r1]
-    ldr r4, [r2]
-    str r3, [r1]
-    sub r4, r4, #1
-    b outer_test
+    ldr r1, addressOfi          // load address of i into r1
+    ldr r2, addressOfrows       // placing address of rows into r2
+    ldr r3, [r1]                // load 0 ( value in r1 ) into r3
+    ldr r4, [r2]                // load 8 ( value in r2 ) into r4
+    str r3, [r1]                // this assigns 0 to i
+    sub r4, r4, #1              // subtract 1 from rows, this is the conditional for the outer loop
+    b outer_loop_mid            // branch to outer_test label
 
 outer_loop:
-    ldr r0, addressOfstars
-    bl printf                   // prints a * character
+  
+    ldr r5, addressOfj          
+    ldr r6, addressOfrows
+    ldr r7, [r5]
+    ldr r8, [r6]
+    str r7, [r5]
+    sub r8, r8, r3
 
-    // This is where the next loop is going to go
-    // If I think of this correctly, I may need to push and pop from the stack 
-    // again here...
+    b inner1_loop
+
+    ldr r0, addressOfstars
+    bl printf
 
     ldr r0, addressOfnewline
-    bl printf                   // prints a newline
-
-    ldr r1, addressOfi
-    ldr r3, [r1]                // load value of i into r3
-    add r3, r3, #1              // add 1 to r4
-    str r3, [r1]                //  str r4 into value of r1 so i should = 2
+    bl printf
     
-outer_test:
-    cmp r3, r4                  // first run, 1 < 8, second run 2 < 8 and so on
+    ldr r1, addressOfi
+    ldr r3, [r1]
+    add r3, r3, #1
+    str r3, [r1]
+    
+    b inner1_loop_mid
+
+inner1_loop:
+    
+    ldr r5, addressOfj
+    ldr r7, [r5]
+    ldr r8, [r8]
+    
+    ldr r0, addressOfspaces
+    bl printf
+
+    ldr r5, addressOfj
+    ldr r7, [r5]
+    ldr r8, [r8]
+    add r7, r7, #1
+    str r7, [r5]
+    
+    b inner1_loop_mid
+
+inner1_loop_mid:
+    cmp r7, r8
+    blt inner1_loop
+
+inner1_loop_end:
+    ldr r0, addressOfnewline
+    bl printf
+
+outer_loop_mid:
+    cmp r3, r4                  // first run, 0 < 8, second run 1 < 8 and so on
     blt outer_loop
 
+outer_loop_end:
+    ldr r0, addressOfnewline
+    bl printf                   // when outer loop ends, it will move down to the base loop
+    
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+// -----------------------------------------------------------------------------------------------
 // create the base 
-// since this is the loop of the code and will end here
-// im going to move this down temporarly
 base:
     ldr r1, addressOfi          // at this point i has a value of 8, so we need to reset
     ldr r2, addressOfrows       // load up values of rows
@@ -92,7 +92,7 @@ base:
     ldr r4, [r2]                // replace r4 with the value in r2
     mov r4, r4, lsl #1          // doubling 8 is 16 meaning we can bitshift to the left 1 time
     sub r4, r4, #1              // subtract 1 to meet conditional we want for the base
-    b base_test
+    b base_mid
 
 base_loop:
     ldr r0, addressOfstars
@@ -103,7 +103,7 @@ base_loop:
     add r3, r3, #1
     str r3, [r1]
 
-base_test:
+base_mid:
     cmp r3, r4
     blt base_loop
 
