@@ -20,6 +20,36 @@ main:
     str lr, [sp, #-4]!          // push the lr to the stack
     b outer_loop 
 
+outer_loop:
+    
+    ldr r0, addressOfStars
+    bl printf
+
+    ldr r1, addressOfI
+    ldr r2, addressOfOuterLength
+    ldr r3, [r1]
+    add r3, r3, #1              // make the increment
+    str r3, [r1]
+    ldr r4, [r2]
+
+inner1_loop:
+     
+    ldr r1, addressOfI
+    ldr r2, addressOfInner1Length
+    ldr r3, [r1]
+    ldr r4, [r2]
+
+    ldr r0, addressOfStars
+    bl printf
+
+    ldr r1, addressOfJ
+    ldr r2, addressOfInner1Length
+    ldr r3, [r1]
+    ldr r4, [r2]
+    add r3, r3, #1
+    str r3, [r1]
+
+
 inner2_loop:
     
     ldr r1, addressOfI
@@ -39,44 +69,15 @@ inner2_loop:
     ldr r4, [r2]
     str r3, [r1]
     
+
+
 inner2_loop_mid:
     cmp r3, r4
     blt inner2_loop
 
-inner1_loop:
-    
-
-    
-    ldr r1, addressOfI
-    ldr r2, addressOfInner1Length
-    ldr r3, [r1]
-    ldr r4, [r2]
-
-    ldr r0, addressOfStars
-    bl printf
-
-    ldr r1, addressOfJ
-    ldr r2, addressOfInner1Length
-    ldr r3, [r1]
-    ldr r4, [r2]
-    add r3, r3, #1
-    str r3, [r1]
-
 inner1_loop_mid:
     cmp r3, r4
     blt inner1_loop
-
-outer_loop:
-    
-    ldr r0, addressOfStars
-    bl printf
-
-    ldr r1, addressOfI
-    ldr r2, addressOfOuterLength
-    ldr r3, [r1]
-    add r3, r3, #1              // make the increment
-    str r3, [r1]
-    ldr r4, [r2]
     
 outer_loop_mid:
     cmp r3, r4                  // first run, 0 < 8, second run 1 < 8 and so on
