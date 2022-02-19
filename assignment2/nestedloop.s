@@ -5,7 +5,10 @@
 
 i: .word 0
 j: .word 0
-rows: .word 8
+outer_length: .word 7
+inner1_length: .word 8
+inner2_length: .word 0
+base_length: .word 8
 
 stars:  .asciz  "*"
 spaces: .asciz  "+"
@@ -15,77 +18,79 @@ newline: .asciz "\n"
 .text
 main: 
     str lr, [sp, #-4]!          // push the lr to the stack
-    ldr r1, addressOfi          // load address of i into r1
-    ldr r2, addressOfrows       // placing address of rows into r2
-    ldr r3, [r1]                // load 0 ( value in r1 ) into r3
-    ldr r4, [r2]                // load 8 ( value in r2 ) into r4
-    str r3, [r1]                // this assigns 0 to i
-    sub r4, r4, #1              // subtract 1 from rows, this is the conditional for the outer loop
-    b outer_loop_mid            // branch to outer_test label
+    b outer_loop 
 
-outer_loop:
-  
-    ldr r5, addressOfj          
-    ldr r6, addressOfrows
-    ldr r7, [r5]
-    ldr r8, [r6]
-    str r7, [r5]
-    sub r8, r8, r3
-
-    b inner1_loop
-
-    ldr r0, addressOfstars
-    bl printf
-
-    ldr r0, addressOfnewline
-    bl printf
+inner2_loop:
     
-    ldr r1, addressOfi
+    ldr r1, addressOfI
+    ldr r2, addressOfInner2Length
+    ldr r3, [r1]
+    mov r4, r3, lsl#1
+    str r4, [r2]
+    
+
+    ldr r0, addressOfSpaces
+    bl printf
+
+    ldr r1, addressOfJ
+    ldr r2, addressOfInner2Length
     ldr r3, [r1]
     add r3, r3, #1
+    ldr r4, [r2]
     str r3, [r1]
     
-    b inner1_loop_mid
+inner2_loop_mid:
+    cmp r3, r4
+    blt inner2_loop
 
 inner1_loop:
     
-    ldr r5, addressOfj
-    ldr r7, [r5]
-    ldr r8, [r8]
+
     
-    ldr r0, addressOfspaces
+    ldr r1, addressOfI
+    ldr r2, addressOfInner1Length
+    ldr r3, [r1]
+    ldr r4, [r2]
+
+    ldr r0, addressOfStars
     bl printf
 
-    ldr r5, addressOfj
-    ldr r7, [r5]
-    ldr r8, [r8]
-    add r7, r7, #1
-    str r7, [r5]
-    
-    b inner1_loop_mid
+    ldr r1, addressOfJ
+    ldr r2, addressOfInner1Length
+    ldr r3, [r1]
+    ldr r4, [r2]
+    add r3, r3, #1
+    str r3, [r1]
 
 inner1_loop_mid:
-    cmp r7, r8
+    cmp r3, r4
     blt inner1_loop
 
-inner1_loop_end:
-    ldr r0, addressOfnewline
+outer_loop:
+    
+    ldr r0, addressOfStars
     bl printf
 
+    ldr r1, addressOfI
+    ldr r2, addressOfOuterLength
+    ldr r3, [r1]
+    add r3, r3, #1              // make the increment
+    str r3, [r1]
+    ldr r4, [r2]
+    
 outer_loop_mid:
     cmp r3, r4                  // first run, 0 < 8, second run 1 < 8 and so on
     blt outer_loop
 
-outer_loop_end:
-    ldr r0, addressOfnewline
-    bl printf                   // when outer loop ends, it will move down to the base loop
+// end of outter loop this is the last line before it goes to the base
+// -----------------------------------------------------------------------------------------------
     
 
 // -----------------------------------------------------------------------------------------------
 // create the base 
 base:
-    ldr r1, addressOfi          // at this point i has a value of 8, so we need to reset
-    ldr r2, addressOfrows       // load up values of rows
+    ldr r1, addressOfI          // at this point i has a value of 8, so we need to reset
+    ldr r2, addressOfBaseLength // load up values of rows
     ldr r3, [r1]                // value in r1 is 8, we will load it into r3
     mov r4, #0                  // mov a 0 into r4, this is what we will replace the 8 with
     str r4, [r1]                // store 0 back into memory for the value of r1
@@ -95,10 +100,10 @@ base:
     b base_mid
 
 base_loop:
-    ldr r0, addressOfstars
+    ldr r0, addressOfStars
     bl printf
 
-    ldr r1, addressOfi
+    ldr r1, addressOfI
     ldr r3, [r1]
     add r3, r3, #1
     str r3, [r1]
@@ -109,7 +114,7 @@ base_mid:
 
 
 end:
-    ldr r0, addressOfnewline    // last new line   
+    ldr r0, addressOfNewline    // last new line   
     bl printf
     ldr lr, [sp], #+4           // pop the lr from the stack
     bx lr
@@ -141,11 +146,14 @@ end:
 .global main
 .global printf
 
-addressOfi: .word i
-addressOfj: .word j
-addressOfrows: .word rows
-addressOfstars: .word stars
-addressOfspaces: .word spaces
-addressOfnewline: .word newline
+addressOfI: .word i
+addressOfJ: .word j
+addressOfOuterLength: .word outer_length
+addressOfInner1Length: .word inner1_length
+addressOfInner2Length: .word inner2_length
+addressOfBaseLength: .word base_length
+addressOfStars: .word stars
+addressOfSpaces: .word spaces
+addressOfNewline: .word newline
 
 
