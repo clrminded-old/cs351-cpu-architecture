@@ -7,7 +7,7 @@ i: .word 0
 j: .word 0
 outer_length: .word 7
 inner1_length: .word 8
-inner2_length: .word 0
+inner2_length: .word 8
 base_length: .word 8
 
 stars:  .asciz  "*"
@@ -18,78 +18,74 @@ newline: .asciz "\n"
 .text
 main: 
     str lr, [sp, #-4]!          // push the lr to the stack
-    b outer_loop 
 
-outer_loop:
-    
-    ldr r0, addressOfStars
-    bl printf
-
+outer:
     ldr r1, addressOfI
     ldr r2, addressOfOuterLength
     ldr r3, [r1]
-    add r3, r3, #1              // make the increment
-    str r3, [r1]
+    mov r4, #0
+    str r4, [r1]
     ldr r4, [r2]
+    b outer_mid
 
-inner1_loop:
-     
+outer_loop:
     ldr r1, addressOfI
-    ldr r2, addressOfInner1Length
+    ldr r2, addressOfOuterLength
     ldr r3, [r1]
     ldr r4, [r2]
+    cmp r3, r4
+    bge outer_done
+    
 
-    ldr r0, addressOfStars
+    ldr r0, addressOfNewline
     bl printf
+    
 
+inner2:
     ldr r1, addressOfJ
-    ldr r2, addressOfInner1Length
+    ldr r2, addressOfInner2Length
     ldr r3, [r1]
     ldr r4, [r2]
-    add r3, r3, #1
-    str r3, [r1]
-
+    add r4, r3, r4
+    sub r4, r4, #1
+    str r4, [r2]
+    b inner2_mid
 
 inner2_loop:
-    
-    ldr r1, addressOfI
-    ldr r2, addressOfInner2Length
-    ldr r3, [r1]
-    mov r4, r3, lsl#1
-    str r4, [r2]
-    
-
-    ldr r0, addressOfSpaces
+    ldr r0, addressOfStars
     bl printf
-
     ldr r1, addressOfJ
     ldr r2, addressOfInner2Length
     ldr r3, [r1]
     add r3, r3, #1
-    ldr r4, [r2]
     str r3, [r1]
-    
+    ldr r4, [r2]
 
-
-inner2_loop_mid:
+inner2_mid:
     cmp r3, r4
     blt inner2_loop
 
-inner1_loop_mid:
+inner_done:
+    ldr r1, addressOfI
+    ldr r2, [r1]
+    add r2, r2, #1
+    str r2, [r1]
+    b outer_loop
+
+outer_mid:
     cmp r3, r4
-    blt inner1_loop
-    
-outer_loop_mid:
-    cmp r3, r4                  // first run, 0 < 8, second run 1 < 8 and so on
     blt outer_loop
 
-// end of outter loop this is the last line before it goes to the base
-// -----------------------------------------------------------------------------------------------
-    
+outer_done:
 
-// -----------------------------------------------------------------------------------------------
+
+// ------------------------------------------------------
 // create the base 
 base:
+    ldr r0, addressOfNewline
+    bl printf
+
+
     ldr r1, addressOfI          // at this point i has a value of 8, so we need to reset
     ldr r2, addressOfBaseLength // load up values of rows
     ldr r3, [r1]                // value in r1 is 8, we will load it into r3
@@ -119,29 +115,6 @@ end:
     bl printf
     ldr lr, [sp], #+4           // pop the lr from the stack
     bx lr
-
-
-
-/* This is just the C code to give me an idea of what I want it to look like
-@ for(i = 0, i < rows - 1, i++) // got this
-
-    @ for(j = 1, j < rows - i, j++)
-
-        @ printf(" ")
-
-    @ for(j = 0, j <= 2*i, j++)
-
-        @ if j == 0 or j == 2 * i
-        
-            @ printf("*")
-
-        @ else 
-        
-            @ printf(" ")
-
-    @ printf("\n")  // when it gets here it will start loop again
-@ end of first for loop
-*/
 
 
 .global main
