@@ -9,7 +9,7 @@ space: .word 0
 rows: .word 8
 
 stars:  .asciz  "*"
-spaces: .asciz  "+"
+spaces: .asciz  " "
 newline: .asciz "\n"
 
 
@@ -42,7 +42,7 @@ loop1:
     
     
     cmp r3, r4
-    bge loop0_end
+    bge loop2_start
 
     ldr r0, addressOfSpaces
     bl printf
@@ -74,7 +74,7 @@ loop2:
     sub r7, r7, #1
     
     cmp r5, r7
-    bgt loop2_end
+    bgt loop0_end
 
     ldr r1, addressOfI
     ldr r2, addressOfJ
