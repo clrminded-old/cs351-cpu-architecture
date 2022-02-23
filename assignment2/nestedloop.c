@@ -3,19 +3,20 @@
 int main()
 {
     int i;
+    int j;
     int space;
     int rows = 8;
     int symbols = 0;
 
-    for(i = 0; i < rows - 1; i++) 
+    for(i = 1; i <= rows; i++) 
     {
-        for(space = 1; space < rows - i; space++) 
+        for(j = i; j < rows; j++) 
         {
             printf(" ");
         }
-        for(symbols = 0; symbols <= 2*i; symbols++)
+        for(j = 1; j <= (2 * i - 1); j++)
         {
-            if(symbols == 0 || symbols == 2*i)
+            if(i == rows || j == 1 || j == (2 * i - 1))
             {
                 printf("*");
             }
@@ -26,10 +27,6 @@ int main()
         }
         printf("\n");
     }
-    for(i = 0; i < 2*rows - 1; i++)
-    {
-        printf("*");
-    }
-    printf("\n");
+    
     return 0;
 }
