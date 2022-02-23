@@ -2,9 +2,10 @@
 arr:
         .word   1
         .word   17
-        .word   34
-        .word   51
-        .word   67
+        .word   24
+        .word   31
+        .word   45
+        .word   55
 
 n:  .word   5
 i: .word 0
@@ -14,6 +15,20 @@ newline:    .asciz "\n"
 
 .text
 main:
+    str lr, [sp, #-4]!
+
+    
+
+
+
+
+    bl print
+
+    ldr lr, [sp], #+4
+    bx lr
+
+// print function
+print:
     str lr, [sp, #-4]!
 
     ldr r1, addressOfArr
@@ -37,7 +52,7 @@ loop:
 
 test:
     ldr r3, [r2]
-    cmp r3, #5
+    cmp r3, #6
     blt loop
 
     ldr r0, addressOfNewline
@@ -45,7 +60,7 @@ test:
 
     ldr lr, [sp], #+4
     bx lr
-
+// end of print function
 
 .global main
 .global printf
