@@ -10,6 +10,7 @@ n:      .word   5
 i:      .word   0
 j:      .word   0
 key:    .word   0
+temp:   .word   0
 
 p2: .asciz "%d "
 newline:    .asciz "\n"
@@ -17,7 +18,13 @@ newline:    .asciz "\n"
 .text
 main:
     str lr, [sp, #-4]!
+    bl sort
+    bl print
+    ldr lr, [sp], #+4
+    bx lr
 
+sort:
+    str lr, [sp, #-4]!
 loop0:
     ldr r1, addressOfI
     ldr r2, addressOfN
@@ -31,7 +38,7 @@ loop0:
     ldr r1, addressOfArr
     ldr r2, addressOfI
     ldr r3, [r2]
-    add r4, r1,r3,LSL #2
+    add r4, r1,r3,LSL #2    arr[i]
     ldr r5, addressOfKey
     str r4, [r5]            // key = arr[i]
     ldr r6, addressOfJ
@@ -82,13 +89,11 @@ loop0_end:
     ldr r1, addressOfI
     ldr r2, [r1]
     add r2, r2, #1
-    str r2, [r1]
-    b loop0
+    str r2, [r1]            // i++
+    b loop0                 // go back to top of loop
     
 
 done:
-    bl print
-
     ldr lr, [sp], #+4
     bx lr
 
@@ -139,3 +144,4 @@ addressOfJ: .word j
 addressOfKey: .word key
 addP2: .word p2
 addressOfNewline: .word newline
+addTemp: .word temp
