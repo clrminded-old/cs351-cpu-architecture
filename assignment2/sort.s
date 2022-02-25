@@ -25,11 +25,13 @@ main:
 
 sort:
     str lr, [sp, #-4]!
-loop0:
     ldr r1, addressOfI
-    ldr r2, addressOfN
-    mov r3, #1
-    str r3, [r1]
+    mov r2, #1
+    str r2, [r1]
+loop0:
+    ldr r1, addressOfI      // r1 <- *i
+    ldr r2, addressOfN      // r2 <- *n
+    ldr r3, [r1]
     ldr r4, [r2]
     
     cmp r3, r4
@@ -37,13 +39,19 @@ loop0:
     // going into parent loop
     ldr r1, addressOfArr
     ldr r2, addressOfI
-    ldr r3, [r2]
-    add r4, r1,r3,LSL #2    arr[i]
-    ldr r5, addressOfKey
-    str r4, [r5]            // key = arr[i]
-    ldr r6, addressOfJ
-    sub r3, r3, #1
-    str r3, [r6]            // j = i - 1
+    ldr r3, addressOfJ
+    ldr r4, addressOfKey
+    ldr r5, [r4]
+    ldr r6, [r3]
+    ldr r7, [r2]
+    ldr r8, [r1]
+
+    
+    add r5, r1,r7,LSL #2    // get arr[i]
+    str r5, [r4]            // key = arr[i]
+  
+    sub r7, r7, #1          // i--
+    str r7, [r3]            // j = i - 1
 
 first_check:
     ldr r1, addressOfJ
