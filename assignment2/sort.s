@@ -9,6 +9,7 @@ arr:
 n:      .word   5
 i:      .word   0
 j:      .word   0
+innerj: .word   0
 key:    .word   0
 temp:   .word   0
 
@@ -40,46 +41,19 @@ loop0:
     // i and n are printing out correctly
     // going into parent loop
 
-
-    ldr r1, addressOfArr        // no change is happening here
+    ldr r1, addressOfArr    // no change is happening here
     ldr r2, addressOfI
-    ldr r3, addressOfJ          // something is wrong here
-    ldr r4, addressOfKey        // something is wrong here
-    ldr r5, [r4]
-    ldr r6, [r3]
-    ldr r7, [r2]
-    ldr r8, [r1]
-    /* r5 -> keys are printing out 0 and a bunch of addresses afterwards
-       r6 -> j, is printing out 0 0 1 2 3, meaning something is going wrong
-             after the 1st iteration...
-       r7 -> i is printing out correctly
-       r8 -> as for the first item in the array does not change, when arr[0]
-             is 1, prints out 1 1 1 1 1, when arr[0] is 67, prints out
-             67 67 67 67 67
-    */
-
-    add r5, r1,r7,LSL #2    // get arr[i]
-    ldr r5, [r5]
-    str r5, [r4]            // key = arr[i]
-
-    ldr r0, addP2
-    mov r1, r5
-    bl printf
-    // from r5 we are getting 51, 34, 17, 1 which is what want...
-
-    ldr r1, addressOfArr        // no change is happening here
-    ldr r2, addressOfI
-    ldr r3, addressOfJ          // something is wrong here
-    ldr r4, addressOfKey        // something is wrong here
-    ldr r5, [r4]
-    ldr r6, [r3]
-    ldr r7, [r2]
-    ldr r8, [r1]
-  
-    sub r7, r7, #1          // i--
-    str r7, [r3]            // j = i - 1
-
-    
+    ldr r2, [r2]
+    add r3, r1,r2,LSL #2
+    ldr r3, [r3]
+    ldr r4, addressOfKey
+    str r3, [r4]            // key = arr[i]
+   
+    ldr r1, addressOfI
+    ldr r1, [r1]
+    sub r2, r1, #1
+    ldr r3, addressOfJ
+    str r2, [r3]            // j = i - 1
 
 
 first_check:
@@ -87,9 +61,7 @@ first_check:
     ldr r2, [r1]
     cmp r2, #0
     blt loop0_end
-    // From here i is 1 2 3 4 5 and j 0 1 2 3 4
     
-
 second_check:
     ldr r1, addressOfArr
     ldr r2, addressOfJ
@@ -183,6 +155,7 @@ addressOfArr: .word arr
 addressOfN: .word n
 addressOfI: .word i
 addressOfJ: .word j
+addressOfInnerJ: .word innerj
 addressOfKey: .word key
 addP2: .word p2
 addressOfNewline: .word newline
