@@ -1,10 +1,10 @@
 .data
 arr:
-        .word   1
-        .word   17
-        .word   34
-        .word   51
         .word   67
+        .word   51
+        .word   34
+        .word   17
+        .word   1
 
 n:      .word   5
 i:      .word   0
@@ -35,29 +35,60 @@ loop0:
     ldr r4, [r2]
     
     cmp r3, r4
-    bgt done 
+    bge done 
+
+    // i and n are printing out correctly
     // going into parent loop
-    ldr r1, addressOfArr
+
+
+    ldr r1, addressOfArr        // no change is happening here
     ldr r2, addressOfI
-    ldr r3, addressOfJ
-    ldr r4, addressOfKey
+    ldr r3, addressOfJ          // something is wrong here
+    ldr r4, addressOfKey        // something is wrong here
     ldr r5, [r4]
     ldr r6, [r3]
     ldr r7, [r2]
     ldr r8, [r1]
+    /* r5 -> keys are printing out 0 and a bunch of addresses afterwards
+       r6 -> j, is printing out 0 0 1 2 3, meaning something is going wrong
+             after the 1st iteration...
+       r7 -> i is printing out correctly
+       r8 -> as for the first item in the array does not change, when arr[0]
+             is 1, prints out 1 1 1 1 1, when arr[0] is 67, prints out
+             67 67 67 67 67
+    */
 
-    
     add r5, r1,r7,LSL #2    // get arr[i]
+    ldr r5, [r5]
     str r5, [r4]            // key = arr[i]
+
+    ldr r0, addP2
+    mov r1, r5
+    bl printf
+    // from r5 we are getting 51, 34, 17, 1 which is what want...
+
+    ldr r1, addressOfArr        // no change is happening here
+    ldr r2, addressOfI
+    ldr r3, addressOfJ          // something is wrong here
+    ldr r4, addressOfKey        // something is wrong here
+    ldr r5, [r4]
+    ldr r6, [r3]
+    ldr r7, [r2]
+    ldr r8, [r1]
   
     sub r7, r7, #1          // i--
     str r7, [r3]            // j = i - 1
+
+    
+
 
 first_check:
     ldr r1, addressOfJ
     ldr r2, [r1]
     cmp r2, #0
     blt loop0_end
+    // From here i is 1 2 3 4 5 and j 0 1 2 3 4
+    
 
 second_check:
     ldr r1, addressOfArr
@@ -66,9 +97,12 @@ second_check:
     ldr r4, [r3]            // key->r4
     ldr r5, [r2]            // j-> r5
     add r6, r1,r5,LSL #2    // arr[j]->r6
-
     cmp r6, r4
     ble loop0_end
+
+    /* The key is getting an address, when there should be a value...
+       j is getting the correct looking results 
+       and r6 is printing  1 1 2 3 4????*/
 
 swap:
     ldr r1, addressOfArr
