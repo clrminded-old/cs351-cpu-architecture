@@ -125,7 +125,7 @@ loop0_end:
     
 
 done:
-
+    /*
     ldr r1, addressOfArr
     mov r2,#0
     ldr r3, [r1, r2, LSL #2]
@@ -164,9 +164,7 @@ done:
     ldr r0, addP2
     mov r1, r3
     bl printf
-
-
-
+    */
     ldr lr, [sp], #+4
     bx lr
 
@@ -176,7 +174,8 @@ print:
 
     ldr r1, addressOfArr
     ldr r2, addressOfI
-    ldr r3, [r2]
+    mov r3, #0
+    str r3, [r2]
     b test
 
 loop:
