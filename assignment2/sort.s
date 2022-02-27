@@ -1,3 +1,14 @@
+/* This is an ARM assembly program that implements
+   a sorting algorithm on an array of numbers. The
+   output is a list of the numbers in the array in
+   ascending order.
+
+   This project was completed by Mohamed Elfergani
+   and Christopher Liudahl-Rackley
+
+   CS351 - CPU architecture
+*/
+
 .data
 arr:
         .word   99
@@ -16,7 +27,9 @@ p2: .asciz "%d "
 newline:    .asciz "\n"
 
 .text
+
 main:
+
     str lr, [sp, #-4]!
     bl sort
     bl print
@@ -24,53 +37,55 @@ main:
     bx lr
 
 sort:
+
     str lr, [sp, #-4]!
     ldr r1, addressOfI
     mov r2, #1
     str r2, [r1]
+
 loop0:
-    ldr r1, addressOfI      // r1 <- *i
-    ldr r2, addressOfN      // r2 <- *n
+
+    ldr r1, addressOfI     
+    ldr r2, addressOfN     
     ldr r3, [r1]
     ldr r4, [r2]
     
     cmp r3, r4
     bge done 
 
-    // i and n are printing out correctly
-    // going into parent loop
-
-    ldr r1, addressOfArr    // no change is happening here
+    ldr r1, addressOfArr    
     ldr r2, addressOfI
     ldr r2, [r2]
     add r3, r1,r2,LSL #2
     ldr r3, [r3]
     ldr r4, addressOfKey
-    str r3, [r4]            // key = arr[i]
+    str r3, [r4]          
    
     ldr r1, addressOfI
     ldr r1, [r1]
     sub r2, r1, #1
     ldr r3, addressOfJ
-    str r2, [r3]            // j = i - 1
+    str r2, [r3]       
   
 
 first_check:
+
     ldr r1, addressOfJ
     ldr r2, [r1]
     cmp r2, #0
     blt loop0_end 
    
 second_check:
+
     ldr r1, addressOfArr
     ldr r2, addressOfJ
     ldr r2, [r2]
-    add r3, r1,r2,LSL #2    // arr[j]
+    add r3, r1,r2,LSL #2 
     ldr r3, [r3]
     ldr r4, addressOfKey
-    ldr r4, [r4]            // key
+    ldr r4, [r4]       
 
-    cmp r3, r4              // if arr[j] > key continue, otherwide b loop0_end
+    cmp r3, r4             
     bgt swap
     b loop0_end
 
@@ -78,17 +93,15 @@ swap:
     
     ldr r1, addressOfArr
     ldr r2, addressOfJ
-    ldr r2, [r2]            // j -> r2
+    ldr r2, [r2]          
     add r3, r1,r2,LSL #2
-    ldr r3, [r3]            // value at arr[j] -> r3
+    ldr r3, [r3]          
     
     add r2,r2,#1
     add r4, r1,r2,LSL #2
-    
     str r3, [r4]
     
     sub r2,r2,#1
-    
     
     ldr r1, addressOfJ
     ldr r2, [r1]
@@ -113,55 +126,15 @@ loop0_end:
     ldr r2,[r1]
     add r2,r2,#1
     str r2,[r1]
-    b loop0                 // go back to top of loop
+    b loop0                
     
-
 done:
-    /*
-    ldr r1, addressOfArr
-    mov r2,#0
-    ldr r3, [r1, r2, LSL #2]
-    ldr r0, addP2
-    mov r1, r3
-    bl printf
 
-
-    ldr r1, addressOfArr
-    mov r2,#1
-    ldr r3, [r1,r2,LSL #2]
-    ldr r0, addP2
-    mov r1, r3
-    bl printf
-
-
-    ldr r1, addressOfArr
-    mov r2,#2
-    ldr r3, [r1,r2,LSL #2]
-    ldr r0, addP2
-    mov r1, r3
-    bl printf
-
-
-    ldr r1, addressOfArr
-    mov r2,#3
-    ldr r3, [r1,r2,LSL #2]
-    ldr r0, addP2
-    mov r1, r3
-    bl printf
-
-
-    ldr r1, addressOfArr
-    mov r2,#4
-    ldr r3, [r1,r2,LSL #2]
-    ldr r0, addP2
-    mov r1, r3
-    bl printf
-    */
     ldr lr, [sp], #+4
     bx lr
 
-// print function
 print:
+
     str lr, [sp, #-4]!
 
     ldr r1, addressOfArr
@@ -171,6 +144,7 @@ print:
     b test
 
 loop:
+
     ldr r1, addressOfArr
     ldr r2, addressOfI
     ldr r3, [r2]
@@ -185,6 +159,7 @@ loop:
     str r3, [r2]
 
 test:
+
     ldr r3, [r2]
     ldr r4, addressOfN
     ldr r4, [r4]
@@ -196,7 +171,7 @@ test:
 
     ldr lr, [sp], #+4
     bx lr
-// end of print function
+
 
 .global main
 .global printf
