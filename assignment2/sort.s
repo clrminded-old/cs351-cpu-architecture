@@ -1,10 +1,10 @@
 .data
 arr:
-        .word   67
-        .word   51
-        .word   34
-        .word   17
+        .word   99
+        .word   2
         .word   1
+        .word   54
+        .word   607
 
 n:      .word   5
 i:      .word   0
@@ -82,22 +82,13 @@ swap:
     add r3, r1,r2,LSL #2
     ldr r3, [r3]            // value at arr[j] -> r3
     
-    ldr r5, addTemp
-    str r3, [r5]
-    ldr r5,[r5]
-    
     add r2,r2,#1
     add r4, r1,r2,LSL #2
-    ldr r4,[r4]
     
-    str r3, [r1,r2,LSL #2]
+    str r3, [r4]
     
     sub r2,r2,#1
-    str r5,[r1,r2,LSL #2]
     
-    
-    cmp r2,#0
-    ble loop0_end
     
     ldr r1, addressOfJ
     ldr r2, [r1]
@@ -111,6 +102,7 @@ loop0_end:
     ldr r1, addressOfArr
     ldr r2, addressOfJ
     ldr r2,[r2]
+    add r2,r2,#1
     add r3, r1,r2,LSL #2
     
     ldr r4, addressOfKey
